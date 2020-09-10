@@ -3,33 +3,35 @@
 
 #include <iostream>
 
-
-
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+void ShowMaxVertexCount();
 
 const char* vertexShaderSource = "#version 330 core\n"
-"layout (location = 0) in vec3 aPos;\n"
+"layout(location = 0) in vec3 aPos;\n" // 位置变量的属性位置值为0"
+"out vec4 vertexColor;\n" // 为片段着色器指定一个颜色输出"
 "void main()\n"
 "{\n"
-"   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-"}\0";
+"	gl_Position = vec4(aPos, 1.0);\n"// 注意我们如何把一个vec3作为vec4的构造器的参数
+"	vertexColor = vec4(0.5, 0.0, 0.0, 1.0);\n" // 把输出变量设置为暗红色
+"}\n\0";
 
 const char* fragmentShaderSource = "#version 330 core\n"
 "out vec4 FragColor;\n"
+"in vec4 vertexColor;\n" // 从顶点着色器传来的输入变量（名称相同、类型相同）
 "void main()\n"
 "{\n"
-"   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+"	FragColor = vertexColor;\n"
 "}\n\0";
 
-
-const char* fragmentShaderSource2 = "#version 330 core\n"
+const char* fragmentUniformShader = "#version 330 core\n"
 "out vec4 FragColor;\n"
+"uniform vec4 ourColor;\n" // 在OpenGL程序代码中设定这个变量
 "void main()\n"
 "{\n"
-"   FragColor = vec4(0.0f, 0.5f, 0.2f, 0.5f);\n"
-"}\n\0";
+"	FragColor = ourColor;\n"
+"}\0";
 
+const int SCR_WIDTH = 800;
+const int SCR_HEIGHT = 600;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
@@ -43,10 +45,10 @@ int main()
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	//创建窗口
-	auto window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "HelloTriangel", NULL, NULL);
+	auto window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "GLSL", NULL, NULL);
 	if (window == NULL)
 	{
-		std::cout<< "Failed to create GLFW window" << std::endl;
+		std::cout << "Failed to create GLFW window" << std::endl;
 		return -1;
 	}
 
@@ -55,7 +57,7 @@ int main()
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
 	//载入opengl参数
-	if ( !gladLoadGLLoader((GLADloadproc)glfwGetProcAddress) )
+	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
 		std::cout << "Failed to initialize GLAD" << std::endl;
 		return -1;
@@ -70,7 +72,7 @@ int main()
 	int success;
 	char infoLog[512];
 	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-	if ( !success )
+	if (!success)
 	{
 		glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
 		std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
@@ -79,12 +81,8 @@ int main()
 
 	//创建并编译片段着色器
 	int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+	glShaderSource(fragmentShader, 1, &fragmentUniformShader, NULL);
 	glCompileShader(fragmentShader);
-
-	int fragmentShader2 = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragmentShader2, 1, &fragmentShaderSource2, NULL);
-	glCompileShader(fragmentShader2);
 
 	//检查shader编译错误
 	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
@@ -94,7 +92,6 @@ int main()
 		std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
 		return -1;
 	}
-
 	//链接shader
 	int shaderProgram = glCreateProgram();
 	glAttachShader(shaderProgram, vertexShader);
@@ -109,26 +106,14 @@ int main()
 		std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
 		return -1;
 	}
-
-	int shaderProgram2 = glCreateProgram();
-	glAttachShader(shaderProgram2, vertexShader);
-	glAttachShader(shaderProgram2, fragmentShader2);
-	glLinkProgram(shaderProgram2);
-
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
-	glDeleteShader(fragmentShader2);
+
 	//顶点数组
 	float vertices[] = {
 	-0.5f, -0.5f, 0.0f, // left  
 	 0.5f, -0.5f, 0.0f, // right 
 	 0.0f,  0.5f, 0.0f  // top    
-	};
-
-	float vertices2[] = {
-	0.0f,  0.5f, 0.0f,
-	 -1.0f,  0.5f, 0.0f,
-	 -0.5f,  -0.5f, 0.0f
 	};
 
 	unsigned int VBO, VAO;
@@ -142,20 +127,6 @@ int main()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
-
-	unsigned int VBO2, VAO2;
-	glGenVertexArrays(1, &VAO2);
-	glGenBuffers(1, &VBO2);
-	glBindVertexArray(VAO2);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO2);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices2), vertices2, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
-	
-
-
 	while (!glfwWindowShouldClose(window))
 	{
 		processInput(window);
@@ -167,10 +138,6 @@ int main()
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 
-		glUseProgram(shaderProgram2);
-		glBindVertexArray(VAO2);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
-
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
@@ -180,12 +147,15 @@ int main()
 	glDeleteProgram(shaderProgram);
 
 	glfwTerminate();
-
 	return 0;
 }
+void ShowMaxVertexCount()
+{
+	int nrAttributes;
+	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
+	std::cout << "Maximum nr of vertex attributes supported: " << nrAttributes << std::endl;
+}
 
-// process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
-// ---------------------------------------------------------------------------------------------------------
 void processInput(GLFWwindow* window)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)

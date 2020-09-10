@@ -21,10 +21,20 @@
     <ClCompile Include="glad.c">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="NCPShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ShaderSources.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="NCPShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shader\shader.fs" />
+    <None Include="shader\shader.vs" />
   </ItemGroup>
 </Project>

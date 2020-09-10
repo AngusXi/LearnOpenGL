@@ -126,7 +126,9 @@ int main()
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
-
+	
+	float lastTime = glfwGetTime();
+	float fps = 0;
 	while (!glfwWindowShouldClose(window))
 	{
 		processInput(window);
@@ -134,12 +136,24 @@ int main()
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
+		float timeValue = glfwGetTime();
+		float greenValue = (sin(timeValue) / 2.0f) + 0.5f;
+		int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
+		//注意，查询uniform地址不要求你之前使用过着色器程序，但是更新一个uniform之前你必须先使用程序（调用glUseProgram)，因为它是在当前激活的着色器程序中设置uniform的
 		glUseProgram(shaderProgram);
+		glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
+
+		//glUseProgram(shaderProgram);
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
+		
+		fps = 1 / (timeValue - lastTime);
+		lastTime = timeValue;
+
+		std::cout << "fps: " << fps << std::endl;
 	}
 
 	glDeleteVertexArrays(1, &VAO);

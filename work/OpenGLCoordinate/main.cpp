@@ -103,10 +103,10 @@ int main()
 	//顶点数组
 	float vertices[] = {
 		//     ---- 位置 ----       ---- 颜色 ----     - 纹理坐标 -
-			 10.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // 右上
-			 10.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // 右下
-			-10.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // 左下
-			-10.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // 左上
+			 0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // 右上
+			 0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // 右下
+			-0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // 左下
+			-0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // 左上
 	};
 	unsigned int indices[] = {
 	   0, 1, 3, // first triangle
@@ -144,7 +144,7 @@ int main()
 	shader.setInt("ourTexture1", 0);
 	shader.setInt("ourTexture2", 1);
 
-	
+
 	//trans = glm::rotate(trans, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
 	//trans = glm::scale(trans, glm::vec3(0.4, 0.4, 0.8));
 
@@ -167,9 +167,9 @@ int main()
 		// render container
 		shader.use();
 		shader.setFloat("offset", greenValue);
-		
+
 		glm::mat4 trans;
-		
+
 		trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
 		trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
 		shader.setMat("transform", trans);
@@ -234,6 +234,6 @@ void testMatrix()
 	glm::mat4 trans;
 	trans = glm::translate(trans, glm::vec3(1.0f, 1.0f, 0.0f));
 	vec = trans * vec;
-	std::cout <<"TestMatrix: " << vec.x << vec.y << vec.z << std::endl;
+	std::cout << "TestMatrix: " << vec.x << vec.y << vec.z << std::endl;
 
 }

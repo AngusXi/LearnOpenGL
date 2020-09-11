@@ -346,8 +346,9 @@ int main()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
-	NCPShader shader("./shader/shader-offset.glslvs", "./shader/shader.glslfs");
-	
+	// NCPShader shader("./shader/shader-offset.glslvs", "./shader/shader.glslfs"); practise 2 
+	NCPShader shader("./shader/shader-vertexpos.glslvs", "./shader/shader-vertexpos.glslfs");
+
 	while (!glfwWindowShouldClose(window))
 	{
 		processInput(window);
@@ -359,8 +360,10 @@ int main()
 		float greenValue = (float)(sin(timeValue) / 2.0f) + 0.5f;
 
 		shader.use();
+		/* practise 2
 		shader.setVecF3("customColor", 0.0f, greenValue, 0.0f);
 		shader.setFloat("offset", greenValue);
+		*/
 
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 3);

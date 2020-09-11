@@ -136,7 +136,11 @@
     <ClInclude Include="ShaderSources.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="shader\shader-offset.glslvs" />
+    <None Include="shader\shader-revert.glslvs" />
     <None Include="shader\shader.fs" />
+    <None Include="shader\shader.glslfs" />
+    <None Include="shader\shader.glslvs" />
     <None Include="shader\shader.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

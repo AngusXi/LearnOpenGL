@@ -36,5 +36,9 @@
   <ItemGroup>
     <None Include="shader\shader.fs" />
     <None Include="shader\shader.vs" />
+    <None Include="shader\shader.glslfs" />
+    <None Include="shader\shader.glslvs" />
+    <None Include="shader\shader-offset.glslvs" />
+    <None Include="shader\shader-revert.glslvs" />
   </ItemGroup>
 </Project>

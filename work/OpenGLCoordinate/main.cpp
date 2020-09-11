@@ -145,8 +145,15 @@ int main()
 	shader.setInt("ourTexture2", 1);
 
 
-	//trans = glm::rotate(trans, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
-	//trans = glm::scale(trans, glm::vec3(0.4, 0.4, 0.8));
+	//Ä£ÐÍ¾ØÕó
+	glm::mat4 model;
+	model = glm::rotate(model, glm::radians(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+
+	glm::mat4 view;
+	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -1.0f));
+
+	glm::mat4 projection;
+	projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH/SCR_HEIGHT, 0.1f, 10.0f);
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -167,22 +174,14 @@ int main()
 		// render container
 		shader.use();
 		shader.setFloat("offset", greenValue);
+		shader.setMat("model", model);
+		shader.setMat("view", view);
+		shader.setMat("projection", projection);
 
-		glm::mat4 trans;
-
-		trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
-		trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
-		shader.setMat("transform", trans);
 
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-		glm::mat4 trans2;
-		trans2 = glm::translate(trans2, glm::vec3(-0.5f, 0.5f, 0.0f));
-		trans2 = glm::scale(trans2, glm::vec3(abs(sin((float)glfwGetTime())), abs(1 - sin((float)glfwGetTime())), 0.0f));
-		shader.setMat("transform", trans2);
-
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

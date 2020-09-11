@@ -8,6 +8,10 @@
 #include <sstream>
 #include <iostream>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 class NCPShader
 {
 public:
@@ -20,6 +24,7 @@ public:
 	void setFloat(const std::string &name, float value) const;
 	void setVecF3(const std::string& name, float x, float y, float z)const;
 	void setVecF4(const std::string &name, float x, float y, float z, float w);
+	void setMat(const std::string& name, glm::mat4 trans);
 
 private:
 	void checkCompileErrors(unsigned int shader, std::string type);

@@ -7,16 +7,21 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 const int SCR_WIDTH = 800;
 const int SCR_HEIGHT = 600;
 float offset = 0;
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
-
+void testMatrix();
 
 int main()
 {
+	testMatrix();
+
 	//³õÊ¼»¯°æ±¾ºÅ
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -139,6 +144,10 @@ int main()
 	shader.setInt("ourTexture1", 0);
 	shader.setInt("ourTexture2", 1);
 
+	
+	//trans = glm::rotate(trans, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
+	//trans = glm::scale(trans, glm::vec3(0.4, 0.4, 0.8));
+
 	while (!glfwWindowShouldClose(window))
 	{
 		processInput(window);
@@ -157,9 +166,22 @@ int main()
 
 		// render container
 		shader.use();
-		shader.setFloat("offset", offset);
+		shader.setFloat("offset", greenValue);
+		
+		glm::mat4 trans;
+		
+		trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+		trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
+		shader.setMat("transform", trans);
 
 		glBindVertexArray(VAO);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+		glm::mat4 trans2;
+		trans2 = glm::translate(trans2, glm::vec3(-0.5f, 0.5f, 0.0f));
+		trans2 = glm::scale(trans2, glm::vec3(abs(sin((float)glfwGetTime())), abs(1 - sin((float)glfwGetTime())), 0.0f));
+		shader.setMat("transform", trans2);
+
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 		glfwSwapBuffers(window);
@@ -187,12 +209,12 @@ void processInput(GLFWwindow* window)
 		glfwSetWindowShouldClose(window, true);
 	else if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
 	{
-		offset += 0.0001;
-		offset = offset > 1.0 ? 1.0 : offset;
+		offset += 0.0001f;
+		offset = offset > 1.0f ? 1.0f : offset;
 	}
 	else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
 	{
-		offset -= 0.0001;
+		offset -= 0.0001f;
 		offset = offset < 0 ? 0 : offset;
 	}
 }
@@ -204,4 +226,14 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 	// make sure the viewport matches the new window dimensions; note that width and 
 	// height will be significantly larger than specified on retina displays.
 	glViewport(0, 0, width, height);
+}
+
+void testMatrix()
+{
+	glm::vec4 vec(1.0f, 0.0f, 0.0f, 1.0f);
+	glm::mat4 trans;
+	trans = glm::translate(trans, glm::vec3(1.0f, 1.0f, 0.0f));
+	vec = trans * vec;
+	std::cout <<"TestMatrix: " << vec.x << vec.y << vec.z << std::endl;
+
 }

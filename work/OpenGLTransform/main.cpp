@@ -4,12 +4,16 @@
 #include <iostream>
 
 #include "NCPShader.h"
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+
+
+
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 const int SCR_WIDTH = 800;
 const int SCR_HEIGHT = 600;

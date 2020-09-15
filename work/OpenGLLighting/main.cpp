@@ -176,17 +176,20 @@ int main()
         lightingShader.use();
         lightingShader.setVecF3("objectColor", 1.0f, 0.5f, 0.31f);
         lightingShader.setVecF3("lightColor", 1.0f, 1.0f, 1.0f);
+        lightingShader.setVec3("viewPos", camera.Position);
 
         // view/projection transformations
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
         glm::mat4 view = camera.GetViewMatrix();
         lightingShader.setMat("projection", projection);
         lightingShader.setMat("view", view);
+        
+        glm::vec3 realLightPostion = glm::vec3(lightPos.x * sin(glfwGetTime()), lightPos.y * sin(glfwGetTime()), lightPos.z * sin(glfwGetTime()));
 
         // world transformation
         glm::mat4 model = glm::mat4(1.0f);
         lightingShader.setMat("model", model);
-        lightingShader.setVec3("lightPos", lightPos);
+        lightingShader.setVec3("lightPos", realLightPostion);
         // render the cube
         glBindVertexArray(cubeVAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
@@ -197,7 +200,8 @@ int main()
         lightCubeShader.setMat("projection", projection);
         lightCubeShader.setMat("view", view);
         model = glm::mat4(1.0f);
-        model = glm::translate(model, lightPos);
+        
+        model = glm::translate(model, realLightPostion);
         model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
         lightCubeShader.setMat("model", model);
 

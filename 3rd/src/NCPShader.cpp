@@ -85,6 +85,10 @@ void NCPShader::setVecF3(const std::string& name, float x, float y, float z) con
 	glUniform3f(glGetUniformLocation(ID, name.c_str()), x, y, z);
 }
 
+void NCPShader::setVec3(const std::string& name, glm::vec3 v3)
+{
+	glUniform3f(glGetUniformLocation(ID, name.c_str()), v3.x, v3.y, v3.z);
+}
 void NCPShader::setVecF4(const std::string& name, float x, float y, float z, float w)
 {
 	glUniform4f(glGetUniformLocation(ID, name.c_str()), x, y, z, w);
